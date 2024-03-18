@@ -1,9 +1,7 @@
 import ast
 
 class secrets:
-  def __init__(self):
-    secrets = {}
-    
+  def __init__(self):      
     with open('.env') as e:
       for line in e:
         if '=' not in line or line.startswith("#"): continue
