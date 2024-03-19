@@ -1,8 +1,8 @@
 import ast
 
 class secrets:
-  def __init__(self):      
-    with open('.env') as e:
+  def __init__(self, path: str = '.env'):      
+    with open(path) as e:
       for line in e:
         if '=' not in line or line.startswith("#"): continue
         prsd = line.split('=')

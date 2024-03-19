@@ -1,30 +1,38 @@
 import numpy as np
+from random import randint
+from scipy.ndimage import  rotate
 import p4rser
+import generator
 env = p4rser.secrets()
 
-B = np.array([[1, 45],     # private basis
-              [45, -1]])
-BN = np.linalg.inv(B)      # B inv
 
-U = np.array([[1, 5],
-              [8, 41]])    # unimodular matrix to encrypt
-UN = np.linalg.inv(U)      # U inv
+B = np.random.randn(env.ndim, env.ndim)
+B[np.diag_indices_from(B)] = np.random.randn(env.ndim) * randint(40, 50)
+BN = np.linalg.inv(B)
+print(B)
 
-B1 = np.dot(U, B)          # B` or public basis
+U = np.array(generator.unimod(env.ndim)).astype(int)
+print(U, np.linalg.det(U))
+UN = np.linalg.inv(U)
 
-m = np.array([68, 69])     # message to encrypt
-print(f'message  : hi or {m} in ancii')
+B1 = np.dot(U.astype(np.float64), B.astype(np.float64))
+print(B1.dtype)
 
-c = np.dot(m, B1)          # encrypted nmessage without noize
+m = 'hello'
+mb = np.array(list(m.encode()), dtype=int)
+print(f'message  : {m} or {mb} in ancii')
+
+c = np.dot(mb, B1)
+
+r = np.random.rand(env.ndim) - 0.5
+
+c = c + r
 print(f'encrypted: {c}')
 
-r = np.array([1, -0.1])    # noize
+m1 = np.dot(c, BN)
 
-c = c + r                  # noize addition
+m2b = np.dot(m1, UN)
+m2b = np.round(m2b).astype(int)
 
-m1 = np.dot(c, BN)         # decrypted message
-
-m2 = np.dot(m1, UN)        # reconstructed message
-m2 = np.round(m2).astype(int)
-
-print(f'decrypted: still hi or {m2}')
+m2 = bytes(m2b.tolist()).decode()
+print(f'decrypted: still {m2} or {m2b}')

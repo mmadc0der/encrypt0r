@@ -23,8 +23,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="encrypt0r.py" />
+    <Compile Include="generator.py" />
     <Compile Include="p4rser.py" />
-    <Compile Include="vector.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.11" />
