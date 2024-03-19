@@ -1,16 +1,24 @@
-from sympy import Rational, eye, Matrix
-from sympy.ntheory.continued_fraction \
-  import continued_fraction_convergents, continued_fraction_iterator, continued_fraction
 from random import randint
 
-def unimod(ndim):
-  r = Rational(randint(1, 256), randint(1, 128))
-  cfr = continued_fraction(r)
-  Mlst = [eye(ndim) for k in range(len(cfr))]
-  for k, m in enumerate(cfr):
-    i, j = randint(0, ndim - 1), randint(0, ndim - 1)
-    if i != j: Mlst[k][i, j] = -m
-    else: Mlst[k][0, 1] = -m
-  alpha = eye(ndim)
-  for M in Mlst[::-1]: alpha *= M
-  return alpha.tolist()
+import numpy as np
+
+import os.path
+import unimod
+import p4rser
+
+env = p4rser.secrets()
+
+def generate_key(secret: dict) -> np.ndarray: 
+  return np.dot(secret['U'].astype(np.float64), secret['B'].astype(np.float64))
+  
+def generate_secret() -> dict:
+  secret = {}
+
+  secret['B'] = np.random.randn(env.ndim, env.ndim)
+  secret['B'][np.diag_indices_from(secret['B'])] = np.random.randn(env.ndim) * randint(40, 50)
+  secret['BN'] = np.linalg.inv(secret['B'])
+    
+  secret['U'] = np.array(unimod.unimod(env.ndim)).astype(int)
+  secret['UN'] = np.linalg.inv(secret['U'])
+  
+  return secret
