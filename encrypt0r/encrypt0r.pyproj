@@ -24,7 +24,7 @@
   <ItemGroup>
     <Compile Include="certificate.py" />
     <Compile Include="encrypt0r.py" />
-    <Compile Include="generator.py" />
+    <Compile Include="generate.py" />
     <Compile Include="unimod.py" />
     <Compile Include="p4rser.py" />
   </ItemGroup>

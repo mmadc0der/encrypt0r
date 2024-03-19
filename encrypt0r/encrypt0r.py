@@ -1,32 +1,25 @@
 import numpy as np
-import generator
+import generate
 import p4rser
 
 env = p4rser.secrets()
 
-
-secret = generator.generate_secret()
-print(secret['B'])
-print(secret['U'], np.linalg.det(secret['U']))
-
-key = generator.generate_key(secret)
-print(key.dtype)
-
-m = 'hello'
-mb = np.array(list(m.encode()), dtype=int)
-print(f'message  : {m} or {mb} in ancii')
-
-c = np.dot(mb, key)
-
-r = np.random.rand(env.ndim) - 0.5
-
-c = c + r
-print(f'encrypted: {c}')
-
-m1 = np.dot(c, secret['BN'])
-
-m2b = np.dot(m1, secret['UN'])
-m2b = np.round(m2b).astype(int)
-
-m2 = bytes(m2b.tolist()).decode()
-print(f'decrypted: still {m2} or {m2b}')
+if __name__ == '__main__':
+  secret = generate.secret()
+  key = generate.key(secret)
+    
+  while True:
+    m = input('message  : ')                    # input
+    m = np.array(list(m.encode()), dtype=int)
+    print(f'sourse   : {m}')
+    
+    c = np.dot(m, key)                          # encrypt
+    r = generate.noize()
+    c = c + r
+    print(f'noize    : {r}')
+    print(f'encrypted: {c}')
+    
+    m = np.dot(c, secret['BN'])                 # decrypt
+    m = np.dot(m, secret['UN'])
+    m = np.round(m).astype(int)
+    print(f'decrypted: {m} or {bytes(m.tolist()).decode()}', end='\n\n')

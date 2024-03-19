@@ -1,17 +1,13 @@
 from random import randint
-
 import numpy as np
-
-import os.path
 import unimod
 import p4rser
-
 env = p4rser.secrets()
 
-def generate_key(secret: dict) -> np.ndarray: 
+def key(secret: dict) -> np.ndarray: 
   return np.dot(secret['U'].astype(np.float64), secret['B'].astype(np.float64))
   
-def generate_secret() -> dict:
+def secret() -> dict:
   secret = {}
 
   secret['B'] = np.random.randn(env.ndim, env.ndim)
@@ -22,3 +18,6 @@ def generate_secret() -> dict:
   secret['UN'] = np.linalg.inv(secret['U'])
   
   return secret
+
+def noize(mid: float = 0, div: float = 0.32) -> np.ndarray:
+  return (np.random.rand(env.ndim) * 2 - 1) * div + mid
